@@ -63,6 +63,14 @@ pub struct Out {
 /// can be baked with the provided recipe and ingredients. Additionally,
 /// return the amount of ingredients that would remain in the pantry after
 /// the cookies have been baked.
+/// # Task 3: Questionable cookie recipes (100 bonus points)
+/// Some mischievous elves have now found your endpoint, and are trying
+/// their "innovative" cookie recipes on it, without even knowing what
+/// ingredients are available in the pantry!
+///
+/// Update the endpoint from Task 2 so that any set of ingredients can
+/// be present in the recipe and the pantry, respectively.
+/// The number of cookies in the answer will always be finite.
 pub async fn bake(jar: CookieJar) -> (StatusCode, String) {
     let cookie_str = match jar.get("recipe") {
         Some(s) => s.value(),
@@ -97,13 +105,18 @@ pub async fn bake(jar: CookieJar) -> (StatusCode, String) {
     let number_of_servings = pantry
         .iter()
         .map(|(item, amount)| {
-            let ingredient = recipe.get(item.as_str()).unwrap_or(&1);
-            let servings = amount / ingredient;
+            let servings = match recipe.get(item.as_str()) {
+                Some(ingredient) if ingredient == &0 => i64::MAX,
+                Some(ingredient) => amount / ingredient,
+                None => i64::MAX,
+            };
 
             servings
         })
         .min()
         .unwrap_or(0);
+
+    //     println!("NUMBER OF SERVINGS {number_of_servings}");
 
     let unused_ingredients: HashMap<String, i64> = pantry
         .into_iter()
@@ -111,7 +124,7 @@ pub async fn bake(jar: CookieJar) -> (StatusCode, String) {
             let recipe_need = recipe.get(item.as_str()).unwrap_or(&0);
             let used_amount = recipe_need * number_of_servings;
             let new_amount = amount - used_amount;
-	    println!("need {recipe_need} used {used_amount} #{number_of_servings} old {amount} new {new_amount}");
+            //     println!("MAP {item} need {recipe_need} used {used_amount} #{number_of_servings} old {amount} new {new_amount}");
 
             (item, new_amount)
         })
