@@ -84,7 +84,7 @@ pub async fn bake(jar: CookieJar) -> (StatusCode, String) {
         Err(e) => return (StatusCode::INTERNAL_SERVER_ERROR, e.to_string()),
     };
 
-    //     println!("Input json Object: {recipe_pantry_json}");
+    println!("Input json Object: {recipe_pantry_json}");
 
     let (recipe, pantry) = match serde_json::from_str(&recipe_pantry_json) {
         Ok(json_bytes) => {
@@ -111,6 +111,7 @@ pub async fn bake(jar: CookieJar) -> (StatusCode, String) {
             let recipe_need = recipe.get(item.as_str()).unwrap_or(&0);
             let used_amount = recipe_need * number_of_servings;
             let new_amount = amount - used_amount;
+	    println!("need {recipe_need} used {used_amount} #{number_of_servings} old {amount} new {new_amount}");
 
             (item, new_amount)
         })
@@ -126,7 +127,7 @@ pub async fn bake(jar: CookieJar) -> (StatusCode, String) {
         Err(e) => return (StatusCode::INTERNAL_SERVER_ERROR, e.to_string()),
     };
 
-    //     println!("JSON {res:?}");
+    println!("JSON RES: {res:?}");
 
     (StatusCode::OK, res)
 }
