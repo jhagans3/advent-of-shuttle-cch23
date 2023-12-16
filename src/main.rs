@@ -13,7 +13,8 @@ async fn main() -> shuttle_axum::ShuttleAxum {
         // .route("/1/:num1/:num2", get(cube_the_bits));
         .route("/1/*ids", get(handlers::day_01::sled_id_system))
         .route("/4/strength", post(handlers::day_04::reindeer_cheer))
-        .route("/4/contest", post(handlers::day_04::candy_contest));
+        .route("/4/contest", post(handlers::day_04::candy_contest))
+        .route("/6", post(handlers::day_06::elf_count));
 
     Ok(router.into())
 }
