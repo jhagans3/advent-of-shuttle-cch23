@@ -16,7 +16,8 @@ async fn main() -> shuttle_axum::ShuttleAxum {
         .route("/4/contest", post(handlers::day_04::candy_contest))
         .route("/6", post(handlers::day_06::elf_shelf_count))
         .route("/7/decode", get(handlers::day_07::base64_decoding))
-        .route("/7/bake", get(handlers::day_07::bake));
+        .route("/7/bake", get(handlers::day_07::bake))
+        .route("/8/weight/:pokedex_number", get(handlers::day_08::weight));
 
     Ok(router.into())
 }
